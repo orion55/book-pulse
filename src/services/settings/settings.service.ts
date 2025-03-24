@@ -1,16 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
-import { fileURLToPath } from "url";
+import { getDir } from "./pathUtils";
 
 const SETTING_FILE = "book.txt";
 
 const loadSettings = (): string[] => {
-  const rootDir = path.dirname(fileURLToPath(import.meta.url));
-
-  const settingDir =
-    process.env.NODE_ENV === "development"
-      ? path.join(rootDir, "../..")
-      : rootDir;
+  const settingDir = getDir("");
 
   const settingsPath = path.join(settingDir, SETTING_FILE);
   const settingsContent = fs.readFileSync(settingsPath, "utf8");
