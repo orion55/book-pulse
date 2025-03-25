@@ -7,7 +7,7 @@ const main = async () => {
     printGreeting();
     const settings = loadSettings();
     console.log({ settings });
-    logger.info("Ok");
+    logger.info("Привет!");
   } catch (error) {
     logger.error(error);
   }

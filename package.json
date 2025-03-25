@@ -27,15 +27,15 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.21.0",
-    "@types/ansi-colors": "^3.2.0",
-    "@types/node": "^20.0.0",
+    "@eslint/js": "^9.23.0",
+    "@types/ansi-colors": "^3.2.6",
+    "@types/node": "^20.17.27",
     "@vercel/ncc": "^0.38.3",
-    "eslint": "^9.21.0",
+    "eslint": "^9.23.0",
     "globals": "^16.0.0",
-    "prettier": "3.5.2",
-    "typescript": "~5.7.2",
-    "typescript-eslint": "^8.25.0"
+    "prettier": "3.5.3",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "^8.28.0"
   },
   "dependencies": {
     "ansi-colors": "^4.1.3",
