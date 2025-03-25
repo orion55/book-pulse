@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in TypeScript and Javascript.
+
+Code Style and Structure
+
+- Write concise, technical TypeScript code.
+- Use functional and declarative programming patterns; avoid classes.
+- Prefer iteration and modularization over code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoaded, hasError).
+
+Naming Conventions
+
+- Favor named exports for components and utilities.
+
+
+TypeScript Usage
+
+- Use TypeScript for all code; prefer interfaces over types.
+- Avoid using `any` or `unknown` unless absolutely necessary. Look for type definitions in the codebase instead.
+- Avoid type assertions with `as` or `!`.
+
+Syntax and Formatting
+
+- Use arrow functions for pure functions.
+- Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.    
