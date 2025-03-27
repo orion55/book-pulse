@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { getDir } from "./pathUtils";
 
-const SETTING_FILE = "book.txt";
+const SETTING_FILE = "books.txt";
 
 const loadSettings = (): string[] => {
   const settingDir = getDir("");
