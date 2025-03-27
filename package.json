@@ -24,7 +24,9 @@
     "build": "npm run clean && ncc build src/index.ts -o dist -m -s -a && npm run copy-settings && npm run copy-migrations && npm run copy-env",
     "dev": "npx tsx src/index.ts",
     "prepublishOnly": "npm run build",
-    "run": "ncc run src/index.ts"
+    "run": "ncc run src/index.ts",
+    "migrate": "npx prisma migrate dev",
+    "migrate:reset": "npx prisma migrate reset --force"
   },
   "engines": {
     "node": ">=20.0.0"
