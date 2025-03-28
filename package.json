@@ -2,7 +2,6 @@
   "name": "book-pulse",
   "description": "Программа для отслеживание новых книг",
   "version": "1.0.0",
-  "type": "module",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
@@ -17,16 +16,18 @@
     "dist/"
   ],
   "scripts": {
-    "clean": "rimraf dist",
-    "copy-settings": "cpx \"src/books.txt\" dist/",
-    "copy-migrations": "cpx \"prisma/migrations/**/*\" dist/migrations",
-    "copy-env": "cpx .env.production dist/ && ren dist\\.env.production .env",
-    "build": "npm run clean && ncc build src/index.ts -o dist -m -s -a && npm run copy-settings && npm run copy-migrations && npm run copy-env",
     "dev": "npx tsx src/index.ts",
+    "clean": "rimraf dist",
+    "copy-books": "cpx \"src/books.txt\" dist/",
+    "copy-dev-db": "cpx \"prisma/dev.db\" dist/",
+    "copy-env": "cpx .env.production dist/ && ren dist\\.env.production .env",
+    "move-engine": "move dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
     "prepublishOnly": "npm run build",
     "run": "ncc run src/index.ts",
     "migrate": "npx prisma migrate dev",
-    "migrate:reset": "npx prisma migrate reset --force"
+    "migrate:reset": "npx prisma migrate reset --force",
+    "post-build": "npm run migrate:reset && npm run copy-books && npm run copy-dev-db && npm run copy-env && npm run move-engine",
+    "build": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build"
   },
   "engines": {
     "node": ">=20.0.0"

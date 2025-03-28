@@ -1,13 +1,12 @@
-import { fileURLToPath } from 'url';
-import path from 'path';
-import * as dotenv from 'dotenv';
+import path from "path";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
-export function getDir(baseFolder: string): string {
-  const baseDir = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.resolve(); // путь к текущей рабочей директории
 
-  return process.env.NODE_ENV === 'development'
-    ? path.join(baseDir, '../..', baseFolder)
-    : path.join(baseDir, baseFolder);
+export function getDir(baseFolder: string): string {
+  return process.env.NODE_ENV === "development"
+    ? path.join(__dirname, "src", baseFolder) // если запускаешь из исходников
+    : path.join(__dirname, baseFolder); // если запускаешь из dist
 }

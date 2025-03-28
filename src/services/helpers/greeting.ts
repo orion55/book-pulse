@@ -1,4 +1,4 @@
-import cfonts from "cfonts";
+const cfonts = require("cfonts");
 
 export const printGreeting = () => {
   cfonts.say("Book pulse", {
