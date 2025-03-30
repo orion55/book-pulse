@@ -1,4 +1,4 @@
-import { AuthorLibrary, Book } from "./fetchBooks.types";
+import { AuthorLibrary, Book } from "../types/books.types";
 import * as cheerio from "cheerio";
 import { logger } from "../logger.service";
 import colors from "ansi-colors";

@@ -2,9 +2,9 @@ import path from "path";
 import fs from "fs";
 import winston, { format } from "winston";
 import { getDir } from "./settings/pathUtils";
+import { LOG_PATH } from "./types/constants";
 
 const LOG_FILE = "book-pulse.log";
-const LOG_PATH = "logs";
 
 const logDir = getDir(LOG_PATH);
 

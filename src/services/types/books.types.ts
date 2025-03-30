@@ -9,3 +9,11 @@ export type AuthorLibrary = {
   authorId: number;
   books: Book[];
 };
+
+export type DescBook = {
+  authors: string[];
+  title: string;
+  annotation: string;
+  image: string;
+  file: string;
+};

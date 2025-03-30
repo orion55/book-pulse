@@ -1,4 +1,4 @@
-import { Book, BooksMap } from "../fetchBooks/fetchBooks.types";
+import { Book, BooksMap } from "../types/books.types";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "../logger.service";
 

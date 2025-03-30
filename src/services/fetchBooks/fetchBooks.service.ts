@@ -1,4 +1,4 @@
-import { Book, BooksMap } from "./fetchBooks.types";
+import { Book, BooksMap } from "../types/books.types";
 import { parseBooks } from "./parseBooks";
 
 export const fetchBooks = async (settings: string[]): Promise<BooksMap> => {
