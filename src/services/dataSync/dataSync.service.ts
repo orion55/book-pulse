@@ -25,12 +25,14 @@ export const dataSync = async (books: BooksMap): Promise<Book[] | null> => {
           data: mapBookData(authorId, parsedBooks),
         });
       } else {
-        const dbBookIds = new Set(dbBooks.map((b) => b.bookId));
-        const parsedBookIds = new Set(parsedBooks.map((b) => b.bookId));
+        const dbBookIds = new Set(dbBooks.map((book) => book.bookId));
+        const parsedBookIds = new Set(parsedBooks.map((book) => book.bookId));
 
-        const booksToAdd = parsedBooks.filter((b) => !dbBookIds.has(b.bookId));
+        const booksToAdd = parsedBooks.filter(
+          (book) => !dbBookIds.has(book.bookId),
+        );
         const booksToRemove = dbBooks.filter(
-          (b) => !parsedBookIds.has(b.bookId),
+          (book) => !parsedBookIds.has(book.bookId),
         );
 
         if (booksToAdd.length > 0) {
