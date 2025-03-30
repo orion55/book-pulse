@@ -3,6 +3,7 @@ import * as cheerio from "cheerio";
 import * as path from "path";
 import { logger } from "../logger.service";
 import { downloadAndSave } from "./utils";
+import { transliterate } from "transliteration";
 
 const FLIBUSTA_URL = "http://flibusta.is";
 const BOOK_URL = `${FLIBUSTA_URL}/b`;
@@ -58,12 +59,17 @@ export const downloadBook = async (
     }
   }
 
+  if (authors.length === 0 && annotation === "" && imageLocalPath === "") {
+    throw new Error(
+      `Не получены необходимые данные: отсутствуют авторы, аннотация и изображение. ${bookUrl}\n`,
+    );
+  }
+
+  const authorForFileName = authors.length > 0 ? authors[0] : "unknown";
+  const fileName = transliterate(`${authorForFileName} ${title}`) + ".mobi";
+
   const fileUrl = `${BOOK_URL}/${book.bookId}/mobi`;
-  const fileLocalPath = await downloadAndSave(
-    fileUrl,
-    assetsDir,
-    `${book.bookId}.mobi`,
-  );
+  const fileLocalPath = await downloadAndSave(fileUrl, assetsDir, fileName);
 
   return {
     authors,

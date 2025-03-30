@@ -3,6 +3,7 @@ import { getDir } from "../settings/pathUtils";
 import fs from "fs";
 import { ASSETS_PATH } from "../types/constants";
 import { downloadBook } from "./downloadBook";
+import { logger } from "../logger.service";
 
 export const getBooks = async (books: Book[]): Promise<DescBook[]> => {
   const assetsDir = getDir(ASSETS_PATH);
@@ -14,8 +15,12 @@ export const getBooks = async (books: Book[]): Promise<DescBook[]> => {
   const descBooks: DescBook[] = [];
 
   for (const book of books) {
-    const descBook = await downloadBook(book, assetsDir);
-    descBooks.push(descBook);
+    try {
+      const descBook = await downloadBook(book, assetsDir);
+      descBooks.push(descBook);
+    } catch (error) {
+      logger.error(error);
+    }
   }
 
   return descBooks;

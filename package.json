@@ -52,6 +52,7 @@
     "cfonts": "^3.3.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
+    "transliteration": "^2.3.5",
     "winston": "^3.17.0"
   }
 }

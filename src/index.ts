@@ -15,6 +15,7 @@ const main = async () => {
     const books = await fetchBooks(settings);
     const newBooks = await dataSync(books);
     console.log({ newBooks });
+
     if (IS_DEBUG) {
       const newBooks2: Book[] = [
         { bookId: 800137, title: "Дон Алехандро и его башня" },
