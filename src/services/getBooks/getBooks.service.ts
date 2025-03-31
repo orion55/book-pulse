@@ -5,7 +5,13 @@ import { ASSETS_PATH } from "../types/constants";
 import { downloadBook } from "./downloadBook";
 import { logger } from "../logger.service";
 
-export const getBooks = async (books: Book[]): Promise<DescBook[]> => {
+export const getBooks = async (
+  books: Book[] | null,
+): Promise<DescBook[] | null> => {
+  if (!books || books.length === 0) {
+    return null;
+  }
+
   const assetsDir = getDir(ASSETS_PATH);
 
   if (!fs.existsSync(assetsDir)) {

@@ -15,5 +15,5 @@ export type DescBook = {
   title: string;
   annotation: string;
   image: string;
-  file: string;
+  url: string;
 };

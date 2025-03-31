@@ -3,7 +3,6 @@ import * as cheerio from "cheerio";
 import * as path from "path";
 import { logger } from "../logger.service";
 import { downloadAndSave } from "./utils";
-import { transliterate } from "transliteration";
 
 const FLIBUSTA_URL = "http://flibusta.is";
 const BOOK_URL = `${FLIBUSTA_URL}/b`;
@@ -65,17 +64,11 @@ export const downloadBook = async (
     );
   }
 
-  const authorForFileName = authors.length > 0 ? authors[0] : "unknown";
-  const fileName = transliterate(`${authorForFileName} ${title}`) + ".mobi";
-
-  const fileUrl = `${BOOK_URL}/${book.bookId}/mobi`;
-  const fileLocalPath = await downloadAndSave(fileUrl, assetsDir, fileName);
-
   return {
     authors,
     title,
     annotation,
     image: imageLocalPath,
-    file: fileLocalPath,
+    url: bookUrl,
   } as DescBook;
 };
