@@ -23,12 +23,12 @@ export const sendMessage = async (books: DescBook[] | null): Promise<void> => {
   try {
     if (!books || books.length === 0) {
       const currentDate = new Date().toLocaleDateString("ru-RU");
-      const message = `*${currentDate}* Новых книг пока нет\n\n`;
+      const message = `*${currentDate}* 📚 Новых книг пока нет 📚 \n\n`;
       await bot.telegram.sendMessage(CHAT_ID, message, {
         parse_mode: "Markdown",
       });
       logger.info(
-        `Сообщение «${colors.green("Новых книг пока нет")}» было отправлено`,
+        `Сообщение ${colors.green("Новых книг пока нет")} было отправлено`,
       );
       return;
     }
@@ -43,11 +43,12 @@ export const sendMessage = async (books: DescBook[] | null): Promise<void> => {
 
       try {
         const photoStream = fs.createReadStream(book.image);
-        await bot.telegram.sendPhoto(
-          CHAT_ID,
-          { source: photoStream },
-          { caption: message, parse_mode: "Markdown" },
-        );
+        await bot.telegram.sendPhoto(CHAT_ID, { source: photoStream });
+        logger.info(`Файл обложки ${colors.green(book.image)} был отправлен`);
+
+        await bot.telegram.sendMessage(CHAT_ID, message, {
+          parse_mode: "Markdown",
+        });
         logger.info(`Сообщение ${colors.green(book.title)} было отправлено`);
 
         try {

@@ -15,4 +15,6 @@ model Books {
   authorId Int
   bookId   Int
   title    String
+
+  @@index([authorId])
 }
