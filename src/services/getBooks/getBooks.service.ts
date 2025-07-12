@@ -1,5 +1,5 @@
 import { Book, DescBook } from "../types/books.types";
-import { getDir } from "../settings/pathUtils";
+import { getDir } from "../helpers/pathUtils";
 import fs from "fs";
 import { ASSETS_PATH } from "../types/constants";
 import { downloadBook } from "./downloadBook";

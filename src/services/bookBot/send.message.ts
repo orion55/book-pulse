@@ -3,10 +3,14 @@ import { logger } from "../logger.service";
 import { Telegraf } from "telegraf";
 import fs from "fs";
 import colors from "ansi-colors";
+import { TelegramConfig } from "../config/config.types";
 
-export const sendMessage = async (books: DescBook[] | null): Promise<void> => {
-  const BOT_TOKEN = process.env.BOT_TOKEN;
-  const CHAT_ID = process.env.CHAT_ID;
+export const sendMessage = async (
+  books: DescBook[] | null,
+  telegramConfig: TelegramConfig,
+): Promise<void> => {
+  const BOT_TOKEN = telegramConfig.bot_token;
+  const CHAT_ID = telegramConfig.chat_id;
 
   if (!BOT_TOKEN) {
     logger.error("BOT_TOKEN не задан");

@@ -18,7 +18,8 @@
   "scripts": {
     "dev": "npx tsx src/index.ts",
     "clean": "rimraf dist",
-    "copy-books": "cpx \"src/books.txt\" dist/",
+    "copy-config": "cpx \"src/config.yml\" dist/",
+    "copy-scripts": "cpx \"scripts/run.sh\" dist/",
     "copy-dev-db": "cpx \"prisma/dev.db\" dist/",
     "copy-env": "cpx .env.production dist/ && ren dist\\.env.production .env",
     "move-engine": "move dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
@@ -26,25 +27,26 @@
     "run": "ncc run src/index.ts",
     "migrate": "npx prisma migrate dev",
     "migrate:reset": "npx prisma migrate reset --force",
-    "post-build": "npm run migrate:reset && npm run copy-books && npm run copy-dev-db && npm run copy-env && npm run move-engine",
+    "post-build": "npm run migrate:reset && npm run copy-config && npm run copy-scripts && npm run copy-dev-db && npm run copy-env && npm run move-engine",
     "build": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.1",
+    "@eslint/js": "^9.31.0",
     "@types/ansi-colors": "^3.2.6",
-    "@types/node": "^20.19.4",
+    "@types/got": "^9.6.12",
+    "@types/node": "^20.19.7",
     "@vercel/ncc": "^0.38.3",
     "cpx": "^1.5.0",
-    "eslint": "^9.30.1",
+    "eslint": "^9.31.0",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
     "prisma": "^6.11.1",
     "rimraf": "^6.0.1",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.35.1"
+    "typescript-eslint": "^8.36.0"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
@@ -52,7 +54,10 @@
     "cfonts": "^3.3.0",
     "cheerio": "^1.1.0",
     "dotenv": "^16.6.1",
+    "got": "^14.4.7",
+    "socks-proxy-agent": "^8.0.5",
     "telegraf": "^4.16.3",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "yaml": "^2.8.0"
   }
 }

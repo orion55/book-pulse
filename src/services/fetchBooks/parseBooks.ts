@@ -17,7 +17,7 @@ export const parseBooks = async (url: string): Promise<AuthorLibrary> => {
 
   const authorName = $("h1.title").first().text().trim();
   if (!authorName) {
-    throw new Error("Не удалось извлечь имя автора.");
+    throw new Error(`Не удалось произвести парсинг ${url}.`);
   }
 
   logger.info(`Парсим «${colors.green(authorName)}»`);

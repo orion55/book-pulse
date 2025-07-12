@@ -1,10 +1,10 @@
 import { Book, BooksMap } from "../types/books.types";
 import { parseBooks } from "./parseBooks";
 
-export const fetchBooks = async (settings: string[]): Promise<BooksMap> => {
+export const fetchBooks = async (bookUrls: string[]): Promise<BooksMap> => {
   const booksMap: BooksMap = new Map<number, Book[]>();
 
-  for (const url of settings) {
+  for (const url of bookUrls) {
     const authorLibrary = await parseBooks(url);
     const { authorId, books } = authorLibrary;
     booksMap.set(authorId, books);

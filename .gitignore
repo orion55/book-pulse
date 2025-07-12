@@ -35,3 +35,5 @@ dev.db
 data/
 
 src/assets
+
+src/config.yml
