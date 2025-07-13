@@ -1,7 +1,7 @@
 {
   "name": "book-pulse",
   "description": "Программа для отслеживание новых книг",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "post-build:win": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine:win",
     "post-build:linux": "npm run copy-env && npm run move-engine:linux",
     "build:win": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:win",
-    "build:linux": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:linux"
+    "build:linux": "npx prisma generate && npm run clean && ncc build src/index.ts -o dist --external .prisma/client && npm run post-build:linux"
   },
   "engines": {
     "node": ">=20.0.0"
