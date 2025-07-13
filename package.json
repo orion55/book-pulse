@@ -29,7 +29,7 @@
     "post-build:win": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine:win",
     "post-build:linux": "npm run copy-env && npm run move-engine:linux",
     "build:win": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:win",
-    "build:linux": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client --no-minify && npm run post-build:linux"
+    "build:linux": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:linux"
   },
   "engines": {
     "node": ">=20.0.0"
