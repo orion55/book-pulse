@@ -1,4 +1,5 @@
-FROM node:20-bookworm AS builder
+#FROM node:20-bookworm AS builder
+FROM node:20-bookworm
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
