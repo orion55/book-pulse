@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: book-pulse:latest
+    container_name: book-pulse-container
+    restart: no
+    volumes:
+      - ./docker/dev.db:/app/dev.db
+      - ./docker/config.yml:/app/config.yml
+      - ./docker/logs:/app/logs

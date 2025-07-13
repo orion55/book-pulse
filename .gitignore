@@ -37,3 +37,5 @@ data/
 src/assets
 
 src/config.yml
+
+docker/
