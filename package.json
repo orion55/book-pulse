@@ -18,16 +18,16 @@
   "scripts": {
     "dev": "npx tsx src/index.ts",
     "clean": "rimraf dist",
-    "copy-config": "cpy \"src/config.yml\" dist/",
-    "copy-config:linux": "cpy ./src/config.yml dist/",
-    "copy-dev-db": "cpy \"prisma/dev.db\" dist/",
-    "copy-env": "cpy .env.production dist/ && move-file dist/.env.production dist/.env",
-    "move-engine": "cpy dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
+    "copy-config": "cpy src/config.yml dist --flat",
+    "copy-dev-db": "cpy prisma/dev.db dist --flat",
+    "copy-env": "cpy .env.production dist --flat && move-file dist/.env.production dist/.env",
+    "move-engine:win": "cpy dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
+    "move-engine:linux": "cpy dist/client/libquery_engine-debian-openssl-3.0.x.so.node dist --flat",
     "prepublishOnly": "npm run build",
     "migrate": "npx prisma migrate dev",
     "migrate:reset": "npx prisma migrate reset --force",
-    "post-build:win": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine",
-    "post-build:linux": "npm run migrate:reset && npm run copy-config:linux && npm run copy-dev-db && npm run copy-env",
+    "post-build:win": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine:win",
+    "post-build:linux": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine:linux",
     "build:win": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:win",
     "build:linux": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:linux"
   },
@@ -49,7 +49,6 @@
     "typescript-eslint": "^8.36.0"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^6.11.1",
     "@prisma/client": "^6.11.1",
     "ansi-colors": "^4.1.3",
     "cfonts": "^3.3.0",

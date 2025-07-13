@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider      = "sqlite"
+  binaryTargets = ["native"]
 }
 
 datasource db {
