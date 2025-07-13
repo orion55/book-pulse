@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: runner
     image: book-pulse:latest
     container_name: book-pulse-container
     restart: "no"
