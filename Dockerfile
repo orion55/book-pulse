@@ -5,7 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 RUN npm run build:linux
-ENTRYPOINT ["node", "/app/dist/index.js"]
+ENTRYPOINT ["node", "dist/index.js"]
 
 #FROM node:20-slim  AS runner
 #WORKDIR /app

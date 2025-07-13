@@ -39,3 +39,5 @@ src/assets
 src/config.yml
 
 docker/
+
+prisma/dev01.db
