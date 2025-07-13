@@ -6,7 +6,7 @@ services:
       target: runner
     image: book-pulse:latest
     container_name: book-pulse-container
-    restart: no
+    restart: "no"
     volumes:
       - ./docker/dev.db:/app/dev.db
       - ./docker/config.yml:/app/config.yml
