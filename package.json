@@ -18,17 +18,18 @@
   "scripts": {
     "dev": "npx tsx src/index.ts",
     "clean": "rimraf dist",
-    "copy-config": "cpx \"src/config.yml\" dist/",
-    "copy-scripts": "cpx \"scripts/run.sh\" dist/",
-    "copy-dev-db": "cpx \"prisma/dev.db\" dist/",
-    "copy-env": "cpx .env.production dist/ && ren dist\\.env.production .env",
-    "move-engine": "move dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
+    "copy-config": "cpy \"src/config.yml\" dist/",
+    "copy-config:linux": "cpy ./src/config.yml dist/",
+    "copy-dev-db": "cpy \"prisma/dev.db\" dist/",
+    "copy-env": "cpy .env.production dist/ && move-file dist/.env.production dist/.env",
+    "move-engine": "cpy dist\\client\\query_engine-windows.dll.node dist\\ && rmdir /s /q dist\\client",
     "prepublishOnly": "npm run build",
-    "run": "ncc run src/index.ts",
     "migrate": "npx prisma migrate dev",
     "migrate:reset": "npx prisma migrate reset --force",
-    "post-build": "npm run migrate:reset && npm run copy-config && npm run copy-scripts && npm run copy-dev-db && npm run copy-env && npm run move-engine",
-    "build": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build"
+    "post-build:win": "npm run migrate:reset && npm run copy-config && npm run copy-dev-db && npm run copy-env && npm run move-engine",
+    "post-build:linux": "npm run migrate:reset && npm run copy-config:linux && npm run copy-dev-db && npm run copy-env",
+    "build:win": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:win",
+    "build:linux": "npm run clean && ncc build src/index.ts -o dist -m --external .prisma/client && npm run post-build:linux"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -36,10 +37,9 @@
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@types/ansi-colors": "^3.2.6",
-    "@types/got": "^9.6.12",
     "@types/node": "^20.19.7",
     "@vercel/ncc": "^0.38.3",
-    "cpx": "^1.5.0",
+    "cpy-cli": "^5.0.0",
     "eslint": "^9.31.0",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
@@ -55,8 +55,7 @@
     "cfonts": "^3.3.0",
     "cheerio": "^1.1.0",
     "dotenv": "^16.6.1",
-    "got": "^14.4.7",
-    "socks-proxy-agent": "^8.0.5",
+    "move-file-cli": "^3.0.0",
     "telegraf": "^4.16.3",
     "winston": "^3.17.0",
     "yaml": "^2.8.0"
