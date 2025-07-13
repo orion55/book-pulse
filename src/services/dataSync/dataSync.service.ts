@@ -1,8 +1,15 @@
 import { Book, BooksMap } from "../types/books.types";
-import { PrismaClient } from "@prisma/client";
 import { logger } from "../logger.service";
+import { PrismaBetterSQLite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
+import * as dotenv from "dotenv";
 
-const prisma = new PrismaClient();
+dotenv.config();
+
+const adapter = new PrismaBetterSQLite3({
+  url: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter });
 
 export const dataSync = async (books: BooksMap): Promise<Book[] | null> => {
   const newBooks: Book[] = [];
