@@ -1,6 +1,6 @@
 import { Book, BooksMap } from "../types/books.types";
-import { logger } from "../logger.service";
 import { PrismaClient } from "@prisma/client";
+import { logger } from "../logger.service";
 
 const prisma = new PrismaClient();
 
