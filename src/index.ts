@@ -12,8 +12,8 @@ const main = async () => {
   try {
     printGreeting();
     config = await loadConfig();
-    const books = await fetchBooks(config.books);
-    const newBooks = await dataSync(books);
+    const fetchBooksResult = await fetchBooks(config.books);
+    const newBooks = await dataSync(fetchBooksResult.booksMap);
     const descBooks = await getBooks(newBooks);
     await sendMessage(descBooks, config.telegram);
   } catch (err: unknown) {

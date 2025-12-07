@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "dev": "npx tsx src/index.ts",
+    "generate-clients": "npx prisma generate",
     "clean": "rimraf dist",
     "copy-config": "cpy src/config.yml dist --flat",
     "copy-dev-db": "cpy prisma/dev.db dist --flat",
