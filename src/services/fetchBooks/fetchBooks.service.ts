@@ -1,7 +1,11 @@
-import { BooksMap, FailedUrl, FetchBooksResult } from "../types/books.types";
-import { fetchHtmlWithRetry } from "./fetchHtmlWithRetry";
-import { parseBooks } from "./parseBooks";
-import { logger } from "../logger.service";
+import {
+  BooksMap,
+  FailedUrl,
+  FetchBooksResult,
+} from "@services/types/books.types";
+import { fetchHtmlWithRetry } from "@services/fetchBooks/fetchHtmlWithRetry";
+import { parseBooks } from "@services/fetchBooks/parseBooks";
+import { logger } from "@services/logger.service";
 import colors from "ansi-colors";
 
 // Обрабатываем одну ссылку

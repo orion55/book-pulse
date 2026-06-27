@@ -1,4 +1,4 @@
-import { FailedUrl } from "../types/books.types";
+import { FailedUrl } from "@services/types/books.types";
 
 export const formatFetchFailures = (failed: FailedUrl[]) =>
   failed

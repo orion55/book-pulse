@@ -1,6 +1,6 @@
-import { AppConfig } from "./config.types";
+import { AppConfig } from "@services/config/config.types";
 import path from "path";
-import { getDir } from "../helpers/pathUtils";
+import { getDir } from "@services/helpers/pathUtils";
 import { promises as fs } from "fs";
 import { parse } from "yaml";
 

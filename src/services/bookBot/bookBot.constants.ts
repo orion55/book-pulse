@@ -1,0 +1,1 @@
+export const MAX_ANNOTATION_LENGTH = 1000;

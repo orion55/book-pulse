@@ -1,4 +1,4 @@
-import { Book, BookWithAuthor } from "../types/books.types";
+import { Book, BookWithAuthor } from "@services/types/books.types";
 
 export const mapBookData = (authorId: number, booksArray: Book[]) =>
   booksArray.map((book) => ({

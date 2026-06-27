@@ -1,9 +1,11 @@
-import { DescBook } from "../types/books.types";
-import { logger } from "../logger.service";
+import { DescBook } from "@services/types/books.types";
+import { logger } from "@services/logger.service";
 import { Telegraf } from "telegraf";
 import fs from "fs";
 import colors from "ansi-colors";
-import { TelegramConfig } from "../config/config.types";
+import truncate from "lodash/truncate";
+import { TelegramConfig } from "@services/config/config.types";
+import { MAX_ANNOTATION_LENGTH } from "@services/bookBot/bookBot.constants";
 
 const hasReadableImage = async (imagePath: string): Promise<boolean> => {
   if (!imagePath) {
@@ -66,10 +68,13 @@ export const sendMessage = async (
 
   for (const book of books) {
     const authorsString = book.authors.join(", ");
+    const annotation = truncate(book.annotation, {
+      length: MAX_ANNOTATION_LENGTH,
+    });
     const message =
       `*${book.title}*\n\n` +
       `*Автор(ы):* ${authorsString}\n\n` +
-      `*Аннотация:*\n${book.annotation}\n\n` +
+      `*Аннотация:*\n${annotation}\n\n` +
       `*Скачать:*\n${book.url}\n\n`;
 
     try {

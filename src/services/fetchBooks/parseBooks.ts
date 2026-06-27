@@ -1,6 +1,6 @@
-import { AuthorLibrary, Book } from "../types/books.types";
+import { AuthorLibrary, Book } from "@services/types/books.types";
 import * as cheerio from "cheerio";
-import { logger } from "../logger.service";
+import { logger } from "@services/logger.service";
 
 export type ParseResult =
   | { ok: true; data: AuthorLibrary }

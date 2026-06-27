@@ -1,18 +1,18 @@
-import { fetchBooks } from "./services/fetchBooks/fetchBooks.service";
+import { fetchBooks } from "@services/fetchBooks/fetchBooks.service";
 import {
   dataSync,
   saveSyncedBooks,
-} from "./services/dataSync/dataSync.service";
-import { printGreeting } from "./services/helpers/greeting";
-import { sendMessage } from "./services/bookBot/send.message";
-import { loadConfig } from "./services/config/config.service";
-import { logger } from "./services/logger.service";
-import { BookWithAuthor } from "./services/types/books.types";
+} from "@services/dataSync/dataSync.service";
+import { printGreeting } from "@services/helpers/greeting";
+import { sendMessage } from "@services/bookBot/send.message";
+import { loadConfig } from "@services/config/config.service";
+import { logger } from "@services/logger.service";
+import { BookWithAuthor } from "@services/types/books.types";
 import {
   logFetchFailures,
   processBook,
   toError,
-} from "./services/helpers/processHelpers";
+} from "@services/helpers/processHelpers";
 
 const main = async () => {
   try {

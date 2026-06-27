@@ -1,9 +1,9 @@
-import { sendMessage } from "../bookBot/send.message";
-import { TelegramConfig } from "../config/config.types";
-import { getBooks } from "../getBooks/getBooks.service";
-import { logger } from "../logger.service";
-import { BookWithAuthor, FailedUrl } from "../types/books.types";
-import { formatFetchFailures } from "./formatFetchFailures";
+import { sendMessage } from "@services/bookBot/send.message";
+import { TelegramConfig } from "@services/config/config.types";
+import { getBooks } from "@services/getBooks/getBooks.service";
+import { logger } from "@services/logger.service";
+import { BookWithAuthor, FailedUrl } from "@services/types/books.types";
+import { formatFetchFailures } from "@services/helpers/formatFetchFailures";
 
 export const toError = (err: unknown) =>
   err instanceof Error ? err : new Error(String(err));

@@ -1,9 +1,9 @@
-import { Book, DescBook } from "../types/books.types";
-import { getDir } from "../helpers/pathUtils";
+import { Book, DescBook } from "@services/types/books.types";
+import { getDir } from "@services/helpers/pathUtils";
 import fs from "fs";
-import { ASSETS_PATH } from "../types/constants";
-import { downloadBook } from "./downloadBook";
-import { logger } from "../logger.service";
+import { ASSETS_PATH } from "@services/types/constants";
+import { downloadBook } from "@services/getBooks/downloadBook";
+import { logger } from "@services/logger.service";
 
 export const getBooks = async (
   books: Book[] | null,

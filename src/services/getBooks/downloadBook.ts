@@ -1,8 +1,8 @@
-import { Book, DescBook } from "../types/books.types";
+import { Book, DescBook } from "@services/types/books.types";
 import * as cheerio from "cheerio";
 import * as path from "path";
-import { logger } from "../logger.service";
-import { downloadAndSave } from "./utils";
+import { logger } from "@services/logger.service";
+import { downloadAndSave } from "@services/getBooks/utils";
 
 const FLIBUSTA_URL = "http://flibusta.is";
 const BOOK_URL = `${FLIBUSTA_URL}/b`;

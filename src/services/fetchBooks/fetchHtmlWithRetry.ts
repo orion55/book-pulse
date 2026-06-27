@@ -1,4 +1,4 @@
-import { logger } from "../logger.service";
+import { logger } from "@services/logger.service";
 
 export type DownloadResult =
   | { ok: true; html: string; attempts: number }

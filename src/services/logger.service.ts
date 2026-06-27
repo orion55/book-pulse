@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
 import winston, { format } from "winston";
-import { getDir } from "./helpers/pathUtils";
-import { LOG_PATH } from "./types/constants";
+import { getDir } from "@services/helpers/pathUtils";
+import { LOG_PATH } from "@services/types/constants";
 
 const LOG_FILE = "book-pulse.log";
 

@@ -1,7 +1,7 @@
-import { BooksMap, BookWithAuthor } from "../types/books.types";
+import { BooksMap, BookWithAuthor } from "@services/types/books.types";
 import { PrismaClient } from "@prisma/client";
-import { logger } from "../logger.service";
-import { addAuthorId, mapBookData } from "./bookMappers";
+import { logger } from "@services/logger.service";
+import { addAuthorId, mapBookData } from "@services/dataSync/bookMappers";
 
 export const dataSync = async (
   books: BooksMap,
