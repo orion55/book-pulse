@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { logger } from "@services/logger.service";
 
 const generateUniqueFilePath = (filePath: string): string => {
   const dir = path.dirname(filePath);
@@ -21,6 +22,20 @@ export const downloadAndSave = async (
   fileName: string,
 ): Promise<string> => {
   const res = await fetch(url);
+
+  if (!res.ok) {
+    logger.warn(`Не удалось скачать обложку ${url}: HTTP ${res.status}`);
+    return "";
+  }
+
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().startsWith("image/")) {
+    logger.warn(
+      `Не удалось скачать обложку ${url}: ожидалось изображение, получен Content-Type "${contentType || "не указан"}"`,
+    );
+    return "";
+  }
+
   const buffer = Buffer.from(await res.arrayBuffer());
   const initialPath = path.join(assetsDir, fileName);
   const uniquePath = generateUniqueFilePath(initialPath);

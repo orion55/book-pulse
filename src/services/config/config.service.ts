@@ -3,33 +3,21 @@ import path from "path";
 import { getDir } from "@services/helpers/pathUtils";
 import { promises as fs } from "fs";
 import { parse } from "yaml";
+import {
+  formatConfigError,
+  parseConfig,
+} from "@services/config/config.validator";
 
 export async function loadConfig(): Promise<AppConfig> {
   const configPath = path.join(getDir(""), "config.yml");
   try {
     const fileContents = await fs.readFile(configPath, "utf8");
 
-    const parsed = parse(fileContents);
-
-    let books: string[] = [];
-    if (parsed.books !== undefined) {
-      if (Array.isArray(parsed.books)) {
-        books = parsed.books.map((item: unknown) => String(item));
-      } else {
-        books = [String(parsed.books)];
-      }
-    }
-
-    return {
-      telegram: {
-        bot_token: String(parsed.telegram.bot_token),
-        chat_id: Number(parsed.telegram.chat_id),
-      },
-      books,
-    };
+    const parsed: unknown = parse(fileContents);
+    return parseConfig(parsed);
   } catch (err) {
     throw new Error(
-      `Не удалось прочитать файл конфига по пути "${configPath}": ${err instanceof Error ? err.message : err}`,
+      `Не удалось прочитать или разобрать файл конфига по пути "${configPath}": ${formatConfigError(err)}`,
     );
   }
 }

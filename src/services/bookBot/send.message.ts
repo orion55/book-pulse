@@ -6,36 +6,11 @@ import colors from "ansi-colors";
 import truncate from "lodash/truncate";
 import { TelegramConfig } from "@services/config/config.types";
 import { MAX_ANNOTATION_LENGTH } from "@services/bookBot/bookBot.constants";
-
-const hasReadableImage = async (imagePath: string): Promise<boolean> => {
-  if (!imagePath) {
-    return false;
-  }
-
-  try {
-    const stats = await fs.promises.stat(imagePath);
-    await fs.promises.access(imagePath, fs.constants.R_OK);
-    return stats.isFile();
-  } catch {
-    return false;
-  }
-};
-
-const removeImage = async (imagePath: string) => {
-  if (!imagePath) {
-    return;
-  }
-
-  try {
-    await fs.promises.unlink(imagePath);
-    logger.info(`Файл обложки ${colors.green(imagePath)} удален`);
-  } catch (unlinkError) {
-    logger.error(
-      `Ошибка при удалении файла обложки ${imagePath}:`,
-      unlinkError,
-    );
-  }
-};
+import {
+  escapeMarkdown,
+  hasReadableImage,
+  removeImage,
+} from "@services/bookBot/send.message.helpers";
 
 export const sendMessage = async (
   books: DescBook[] | null,
@@ -67,15 +42,19 @@ export const sendMessage = async (
   }
 
   for (const book of books) {
-    const authorsString = book.authors.join(", ");
-    const annotation = truncate(book.annotation, {
-      length: MAX_ANNOTATION_LENGTH,
-    });
+    const authorsString = escapeMarkdown(book.authors.join(", "));
+    const annotation = escapeMarkdown(
+      truncate(book.annotation, {
+        length: MAX_ANNOTATION_LENGTH,
+      }),
+    );
+    const title = escapeMarkdown(book.title);
+    const url = escapeMarkdown(book.url);
     const message =
-      `*${book.title}*\n\n` +
+      `*${title}*\n\n` +
       `*Автор(ы):* ${authorsString}\n\n` +
       `*Аннотация:*\n${annotation}\n\n` +
-      `*Скачать:*\n${book.url}\n\n`;
+      `*Скачать:*\n${url}\n\n`;
 
     try {
       const shouldSendPhoto = await hasReadableImage(book.image);

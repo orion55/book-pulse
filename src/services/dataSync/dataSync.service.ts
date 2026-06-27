@@ -11,6 +11,13 @@ export const dataSync = async (
 
   try {
     for (const [authorId, parsedBooks] of books.entries()) {
+      if (parsedBooks.length === 0) {
+        logger.warn(
+          `Синхронизация автора ${authorId} пропущена: список книг пуст`,
+        );
+        continue;
+      }
+
       const dbBooks = await prisma.books.findMany({
         where: { authorId },
       });

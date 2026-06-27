@@ -48,6 +48,12 @@ export const parseBooks = (html: string, url: string): ParseResult => {
       });
     });
 
+    if (books.length === 0) {
+      const msg = `Не найдено книг автора для ${url}`;
+      logger.error(msg);
+      return { ok: false, errorMessage: msg };
+    }
+
     return {
       ok: true,
       data: {
