@@ -3,7 +3,13 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build:linux
+RUN npx prisma generate \
+ && npx rimraf dist \
+ && npx ncc build src/index.ts -o dist --external .prisma/client \
+ && npx cpy .env.production dist --flat \
+ && npx move-file dist/.env.production dist/.env \
+ && npx cpy dist/client/libquery_engine-debian-openssl-3.0.x.so.node dist --flat \
+ && npx rimraf dist/client
 
 FROM node:20-slim  AS runner
 WORKDIR /app

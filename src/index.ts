@@ -6,9 +6,10 @@ import { getBooks } from "./services/getBooks/getBooks.service";
 import { sendMessage } from "./services/bookBot/send.message";
 import { loadConfig } from "./services/config/config.service";
 import { sendError } from "./services/bookBot/send.error";
+import { AppConfig } from "./services/config/config.types";
 
 const main = async () => {
-  let config;
+  let config: AppConfig | undefined;
   try {
     printGreeting();
     config = await loadConfig();
@@ -19,8 +20,10 @@ const main = async () => {
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err));
     logger.error(error);
-    await sendError(error, config?.telegram!);
+    if (config?.telegram) {
+      await sendError(error, config.telegram);
+    }
   }
 };
 
-main();
+void main();

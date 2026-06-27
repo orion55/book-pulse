@@ -14,7 +14,7 @@ export async function loadConfig(): Promise<AppConfig> {
     let books: string[] = [];
     if (parsed.books !== undefined) {
       if (Array.isArray(parsed.books)) {
-        books = parsed.books.map((item: any) => String(item));
+        books = parsed.books.map((item: unknown) => String(item));
       } else {
         books = [String(parsed.books)];
       }
