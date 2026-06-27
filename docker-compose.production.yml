@@ -1,0 +1,20 @@
+services:
+  app:
+    image: ghcr.io/orion55/book-pulse:latest
+    init: true
+    restart: "no"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: file:./dev.db
+      TZ: Asia/Yekaterinburg
+    volumes:
+      - ./docker/dev.db:/app/dev.db
+      - ./docker/config.yml:/app/config.yml:ro
+      - ./docker/logs:/app/logs
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
