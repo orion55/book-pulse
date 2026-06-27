@@ -3,6 +3,10 @@ export type Book = {
   title: string;
 };
 
+export type BookWithAuthor = Book & {
+  authorId: number;
+};
+
 export type BooksMap = Map<number, Book[]>;
 
 export type AuthorLibrary = {

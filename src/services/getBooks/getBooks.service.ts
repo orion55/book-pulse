@@ -26,6 +26,7 @@ export const getBooks = async (
       descBooks.push(descBook);
     } catch (error) {
       logger.error(error);
+      throw error;
     }
   }
 

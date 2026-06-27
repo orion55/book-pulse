@@ -1,28 +1,47 @@
-import { logger } from "./services/logger.service";
 import { fetchBooks } from "./services/fetchBooks/fetchBooks.service";
-import { dataSync } from "./services/dataSync/dataSync.service";
+import {
+  dataSync,
+  saveSyncedBooks,
+} from "./services/dataSync/dataSync.service";
 import { printGreeting } from "./services/helpers/greeting";
-import { getBooks } from "./services/getBooks/getBooks.service";
 import { sendMessage } from "./services/bookBot/send.message";
 import { loadConfig } from "./services/config/config.service";
-import { sendError } from "./services/bookBot/send.error";
-import { AppConfig } from "./services/config/config.types";
+import { logger } from "./services/logger.service";
+import { BookWithAuthor } from "./services/types/books.types";
+import {
+  logFetchFailures,
+  processBook,
+  toError,
+} from "./services/helpers/processHelpers";
 
 const main = async () => {
-  let config: AppConfig | undefined;
   try {
     printGreeting();
-    config = await loadConfig();
+    const config = await loadConfig();
+
     const fetchBooksResult = await fetchBooks(config.books);
+    const hasFetchFailures = logFetchFailures(fetchBooksResult.failed);
+
     const newBooks = await dataSync(fetchBooksResult.booksMap);
-    const descBooks = await getBooks(newBooks);
-    await sendMessage(descBooks, config.telegram);
-  } catch (err: unknown) {
-    const error = err instanceof Error ? err : new Error(String(err));
-    logger.error(error);
-    if (config?.telegram) {
-      await sendError(error, config.telegram);
+    if (!newBooks || newBooks.length === 0) {
+      if (!hasFetchFailures) {
+        await sendMessage(null, config.telegram);
+      }
+      return;
     }
+
+    const syncedBooks: BookWithAuthor[] = [];
+
+    for (const book of newBooks) {
+      const syncedBook = await processBook(book, config.telegram);
+      if (syncedBook) {
+        syncedBooks.push(syncedBook);
+      }
+    }
+
+    await saveSyncedBooks(syncedBooks);
+  } catch (err: unknown) {
+    logger.error(toError(err));
   }
 };
 

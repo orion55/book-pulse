@@ -1,18 +1,13 @@
-import { Book, BooksMap } from "../types/books.types";
+import { BooksMap, BookWithAuthor } from "../types/books.types";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "../logger.service";
+import { addAuthorId, mapBookData } from "./bookMappers";
 
-const prisma = new PrismaClient();
-
-export const dataSync = async (books: BooksMap): Promise<Book[] | null> => {
-  const newBooks: Book[] = [];
-
-  const mapBookData = (authorId: number, booksArray: Book[]) =>
-    booksArray.map((book) => ({
-      authorId,
-      bookId: book.bookId,
-      title: book.title,
-    }));
+export const dataSync = async (
+  books: BooksMap,
+): Promise<BookWithAuthor[] | null> => {
+  const prisma = new PrismaClient();
+  const newBooks: BookWithAuthor[] = [];
 
   try {
     for (const [authorId, parsedBooks] of books.entries()) {
@@ -36,10 +31,7 @@ export const dataSync = async (books: BooksMap): Promise<Book[] | null> => {
         );
 
         if (booksToAdd.length > 0) {
-          await prisma.books.createMany({
-            data: mapBookData(authorId, booksToAdd),
-          });
-          newBooks.push(...booksToAdd);
+          newBooks.push(...addAuthorId(authorId, booksToAdd));
         }
 
         if (booksToRemove.length > 0) {
@@ -61,4 +53,29 @@ export const dataSync = async (books: BooksMap): Promise<Book[] | null> => {
   }
 
   return newBooks.length > 0 ? newBooks : null;
+};
+
+export const saveSyncedBooks = async (
+  books: BookWithAuthor[] | null,
+): Promise<void> => {
+  if (!books || books.length === 0) {
+    return;
+  }
+
+  const prisma = new PrismaClient();
+
+  try {
+    await prisma.books.createMany({
+      data: books.map((book) => ({
+        authorId: book.authorId,
+        bookId: book.bookId,
+        title: book.title,
+      })),
+    });
+  } catch (error) {
+    logger.error("Ошибка при сохранении отправленных книг:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 };
