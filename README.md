@@ -58,14 +58,16 @@ books:
 
 `books` может быть массивом ссылок или одной строкой. Идентификатор автора берется из последнего сегмента URL.
 
-Также нужен `.env` для локального запуска и `.env.production` для Docker-сборки:
+Для локального запуска нужен `.env`:
 
 ```env
 NODE_ENV=development
 DATABASE_URL=file:./dev.db
 ```
 
-Для production/Docker обычно используется:
+Для Docker-запуска `NODE_ENV`, `DATABASE_URL` и `TZ` заданы в `docker-compose.yml`; `.env.production` в образ не копируется.
+
+При ручном запуске production-бандла вне Compose используйте:
 
 ```env
 NODE_ENV=production
@@ -100,19 +102,20 @@ npm run dev
 npm run docker
 ```
 
-В `package.json` сейчас нет отдельных скриптов `build` и `start`. Production-бандл собирается внутри `Dockerfile` через Prisma generate, очистку `dist`, `ncc build` и копирование `.env.production` в `.env`.
+В `package.json` сейчас нет отдельных скриптов `build` и `start`. Production-бандл собирается внутри `Dockerfile` через Prisma generate, очистку `dist` и `ncc build`.
 
 ## Docker
 
-Контейнер собирается из `node:20-bookworm`, затем запускается на `node:20-slim`.
+Контейнер собирается из `node:20-bookworm`, затем запускается на `node:20-bookworm-slim` от пользователя `node`.
 
 Во время сборки:
 
 - генерируется Prisma Client;
 - очищается `dist/`;
 - `src/index.ts` упаковывается через `ncc`;
-- `.env.production` копируется в `dist/.env`;
 - Linux Prisma query engine переносится в итоговый bundle.
+
+Build context фильтруется через `.dockerignore`, поэтому в образ не попадают `node_modules`, `.git`, `.env*`, локальные базы, логи и runtime-конфиги.
 
 Runtime-монтажи из `docker-compose.yml`:
 

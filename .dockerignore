@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output and generated runtime files
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local runtime data
+docker/
+data/
+dev.db
+prisma/*.db
+src/assets/
+src/logs/
+src/config.yml
+
+# Secrets and environment-specific config
+.env
+.env.*
+!.env.example
+
+# Logs and caches
+*.log
+npm-debug.log*
+.cache/
+.vite/
+
+# VCS, editor, and local agent files
+.git/
+.gitignore
+.gitattributes
+.idea/
+.vscode/
+.agents/
+.codex/
+
+# Docker and documentation files are not needed inside the image
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+compose*.yml
+compose*.yaml
+AGENTS.md
+README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
