@@ -4,18 +4,19 @@ import { getBooks } from "@services/getBooks/getBooks.service";
 import { logger } from "@services/logger.service";
 import { BookWithAuthor, FailedUrl } from "@services/types/books.types";
 import { formatFetchFailures } from "@services/helpers/formatFetchFailures";
+import { sendErrorMessage } from "@services/bookBot/send.error";
 
 export const toError = (err: unknown) =>
   err instanceof Error ? err : new Error(String(err));
 
 interface CriticalErrorEffects {
   logError: (error: Error) => void;
-  send: typeof sendMessage;
+  sendError: typeof sendErrorMessage;
 }
 
 const defaultCriticalErrorEffects: CriticalErrorEffects = {
   logError: (error) => logger.error(error),
-  send: sendMessage,
+  sendError: sendErrorMessage,
 };
 
 export const handleCriticalError = async (
@@ -26,12 +27,12 @@ export const handleCriticalError = async (
   effects.logError(toError(err));
 
   try {
-    await effects.send(null, telegram);
+    await effects.sendError(telegram);
   } catch (notificationError: unknown) {
     const error = toError(notificationError);
     effects.logError(
       new Error(
-        `Не удалось отправить сообщение об отсутствии новых книг: ${error.message}`,
+        `Не удалось отправить сообщение о критической ошибке: ${error.message}`,
       ),
     );
   }

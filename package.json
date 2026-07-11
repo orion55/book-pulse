@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "dev": "npx tsx src/index.ts",
+    "test": "tsx --test tests/processHelpers.test.ts",
     "generate-clients": "npx prisma generate",
     "lint": "npx eslint .",
     "format": "npx prettier --write .",
@@ -37,6 +38,7 @@
     "prettier": "3.8.5",
     "prisma": "^6.19.3",
     "rimraf": "^6.1.3",
+    "tsx": "^4.20.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.62.0"
   },
