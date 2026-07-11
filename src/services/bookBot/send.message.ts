@@ -12,9 +12,24 @@ import {
   removeImage,
 } from "@services/bookBot/send.message.helpers";
 
+interface SendMessageEffects {
+  createBot: (token: string) => Telegraf;
+  createReadStream: typeof fs.createReadStream;
+  hasReadableImage: typeof hasReadableImage;
+  removeImage: typeof removeImage;
+}
+
+const defaultSendMessageEffects: SendMessageEffects = {
+  createBot: (token) => new Telegraf(token),
+  createReadStream: fs.createReadStream,
+  hasReadableImage,
+  removeImage,
+};
+
 export const sendMessage = async (
   books: DescBook[] | null,
   telegramConfig: TelegramConfig,
+  effects: SendMessageEffects = defaultSendMessageEffects,
 ): Promise<void> => {
   const BOT_TOKEN = telegramConfig.bot_token;
   const CHAT_ID = telegramConfig.chat_id;
@@ -27,7 +42,7 @@ export const sendMessage = async (
     throw new Error("CHAT_ID не задан или некорректен");
   }
 
-  const bot = new Telegraf(BOT_TOKEN);
+  const bot = effects.createBot(BOT_TOKEN);
 
   if (!books || books.length === 0) {
     const currentDate = new Date().toLocaleDateString("ru-RU");
@@ -56,10 +71,11 @@ export const sendMessage = async (
       `*Аннотация:*\n${annotation}\n\n` +
       `*Скачать:*\n${url}\n\n`;
 
+    let shouldSendPhoto = false;
     try {
-      const shouldSendPhoto = await hasReadableImage(book.image);
+      shouldSendPhoto = await effects.hasReadableImage(book.image);
       if (shouldSendPhoto) {
-        const photoStream = fs.createReadStream(book.image);
+        const photoStream = effects.createReadStream(book.image);
         photoStream.on("error", (streamError) => {
           logger.error(
             `Ошибка при чтении файла обложки ${book.image}:`,
@@ -80,12 +96,13 @@ export const sendMessage = async (
       });
       logger.info(`Сообщение ${colors.green(book.title)} было отправлено`);
 
-      if (shouldSendPhoto) {
-        await removeImage(book.image);
-      }
     } catch (error) {
       logger.error("Ошибка при отправке книги:", error);
       throw error;
+    } finally {
+      if (shouldSendPhoto) {
+        await effects.removeImage(book.image);
+      }
     }
   }
 };
