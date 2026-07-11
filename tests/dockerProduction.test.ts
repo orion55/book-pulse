@@ -38,10 +38,11 @@ test("production compose runs migrations with a separate migrator service", asyn
   assert.deepEqual(compose.services?.app?.depends_on, {
     migrate: { condition: "service_completed_successfully" },
   });
-  assert.match(dockerfileText, /FROM builder AS migrator/);
+  assert.match(dockerfileText, /FROM node:20-alpine AS migrator/);
+  assert.match(dockerfileText, /apk add --no-cache openssl su-exec/);
   assert.match(
     dockerfileText,
-    /CMD \["npx", "prisma", "migrate", "deploy"\]/,
+    /exec su-exec node prisma migrate deploy/,
   );
   assert.match(workflowText, /book-pulse-migrate/);
   assert.match(workflowText, /target: migrator/);

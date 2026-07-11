@@ -7,7 +7,7 @@ services:
       target: migrator
     restart: "no"
     environment:
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: file:/app/dev.db
     volumes:
       - ./docker/dev.db:/app/dev.db
 
@@ -24,7 +24,7 @@ services:
         condition: service_completed_successfully
     environment:
       NODE_ENV: production
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: file:/app/dev.db
       TZ: Asia/Yekaterinburg
     volumes:
       - ./docker/dev.db:/app/dev.db

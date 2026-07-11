@@ -10,7 +10,7 @@ COPY tsconfig.json ./
 COPY prisma ./prisma
 COPY src ./src
 
-ENV DATABASE_URL=file:./dev.db
+ENV DATABASE_URL=file:/app/dev.db
 
 RUN npx prisma generate \
  && npx rimraf dist \
@@ -18,15 +18,25 @@ RUN npx prisma generate \
  && npx cpy dist/client/libquery_engine-debian-openssl-3.0.x.so.node dist --flat \
  && npx rimraf dist/client
 
-FROM builder AS migrator
+FROM node:20-alpine AS migrator
 
-USER node
-CMD ["npx", "prisma", "migrate", "deploy"]
+ENV DATABASE_URL=file:/app/dev.db
+
+WORKDIR /app
+
+RUN apk add --no-cache openssl su-exec \
+ && npm install --global prisma@6.19.3 \
+ && npm cache clean --force \
+ && chown node:node /app
+
+COPY --chown=node:node prisma ./prisma
+
+CMD ["sh", "-c", "chown node:node /app/dev.db && chmod u+rw /app/dev.db && exec su-exec node prisma migrate deploy"]
 
 FROM node:20-bookworm-slim AS runner
 
 ENV NODE_ENV=production \
-    DATABASE_URL=file:./dev.db \
+    DATABASE_URL=file:/app/dev.db \
     TZ=Asia/Yekaterinburg
 
 WORKDIR /app

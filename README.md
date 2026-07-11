@@ -65,7 +65,7 @@ NODE_ENV=development
 DATABASE_URL=file:./dev.db
 ```
 
-Для Docker-запуска `NODE_ENV`, `DATABASE_URL` и `TZ` заданы в `docker-compose.yml`; `.env.production` в образ не копируется.
+Для Docker-запуска `NODE_ENV`, `DATABASE_URL` и `TZ` заданы в `docker-compose.yml`; `.env.production` в образ не копируется. В контейнере используется абсолютный SQLite URL `file:/app/dev.db`, совпадающий с точкой монтирования базы.
 
 При ручном запуске production-бандла вне Compose используйте:
 
@@ -106,7 +106,7 @@ npm run docker
 
 ## Docker
 
-Контейнер собирается из `node:20-bookworm`, затем запускается на `node:20-bookworm-slim` от пользователя `node`.
+Приложение собирается из `node:20-bookworm`, затем запускается на `node:20-bookworm-slim` от пользователя `node`. Отдельный migrator использует компактный `node:20-alpine` и содержит только Prisma CLI, OpenSSL, `su-exec` и каталог `prisma/`. При старте migrator исправляет права bind-mounted базы и затем запускает Prisma от пользователя `node`.
 
 Во время сборки:
 
