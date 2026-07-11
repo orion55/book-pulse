@@ -19,7 +19,7 @@
     "migrate": "prisma migrate deploy",
     "predev": "npm run migrate",
     "dev": "tsx src/index.ts",
-    "test": "tsx --test tests/processHelpers.test.ts tests/fetchHtmlWithRetry.test.ts tests/parseBooks.test.ts tests/dataSync.test.ts tests/sendMessage.test.ts",
+    "test": "tsx --test tests/processHelpers.test.ts tests/fetchHtmlWithRetry.test.ts tests/parseBooks.test.ts tests/dataSync.test.ts tests/sendMessage.test.ts tests/dockerProduction.test.ts",
     "generate-clients": "npx prisma generate",
     "lint": "npx eslint .",
     "format": "npx prettier --write .",

@@ -4,10 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
-    command: ["npx", "prisma", "migrate", "deploy"]
+      target: migrator
     restart: "no"
-    user: node
     environment:
       DATABASE_URL: file:./dev.db
     volumes:

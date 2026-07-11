@@ -1,8 +1,22 @@
 services:
+  migrate:
+    image: ghcr.io/orion55/book-pulse-migrate:latest
+    init: true
+    restart: "no"
+    environment:
+      DATABASE_URL: file:./dev.db
+    volumes:
+      - ./docker/dev.db:/app/dev.db
+    security_opt:
+      - no-new-privileges:true
+
   app:
     image: ghcr.io/orion55/book-pulse:latest
     init: true
     restart: "no"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     environment:
       NODE_ENV: production
       DATABASE_URL: file:./dev.db

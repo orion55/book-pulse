@@ -18,6 +18,11 @@ RUN npx prisma generate \
  && npx cpy dist/client/libquery_engine-debian-openssl-3.0.x.so.node dist --flat \
  && npx rimraf dist/client
 
+FROM builder AS migrator
+
+USER node
+CMD ["npx", "prisma", "migrate", "deploy"]
+
 FROM node:20-bookworm-slim AS runner
 
 ENV NODE_ENV=production \

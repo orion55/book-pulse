@@ -16,6 +16,7 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/book-pulse
+  MIGRATOR_IMAGE_NAME: ${{ github.repository_owner }}/book-pulse-migrate
   CACHE_SCOPE: book-pulse-docker
 
 jobs:
@@ -48,6 +49,17 @@ jobs:
             type=raw,value=${{ inputs.tag }}
             type=sha,prefix=sha-,format=short
 
+      - name: Extract migrator Docker metadata
+        id: migrator-meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.MIGRATOR_IMAGE_NAME }}
+          flavor: latest=false
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ inputs.tag }}
+            type=sha,prefix=sha-,format=short
+
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@v7
@@ -58,6 +70,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
+          cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max
+
+      - name: Build and push migrator image
+        id: migrator-build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          target: migrator
+          push: true
+          tags: ${{ steps.migrator-meta.outputs.tags }}
+          labels: ${{ steps.migrator-meta.outputs.labels }}
           cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
           cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max
 
