@@ -9,24 +9,30 @@ import { loadConfig } from "@services/config/config.service";
 import { logger } from "@services/logger.service";
 import { BookWithAuthor } from "@services/types/books.types";
 import {
+  handleCriticalError,
   logFetchFailures,
   processBook,
   toError,
 } from "@services/helpers/processHelpers";
 
 const main = async () => {
-  try {
-    printGreeting();
-    const config = await loadConfig();
+  printGreeting();
+  const config = await loadConfig().catch((err: unknown) => {
+    logger.error(toError(err));
+    return null;
+  });
 
+  if (!config) {
+    return;
+  }
+
+  try {
     const fetchBooksResult = await fetchBooks(config.books);
-    const hasFetchFailures = logFetchFailures(fetchBooksResult.failed);
+    logFetchFailures(fetchBooksResult.failed);
 
     const newBooks = await dataSync(fetchBooksResult.booksMap);
     if (!newBooks || newBooks.length === 0) {
-      if (!hasFetchFailures) {
-        await sendMessage(null, config.telegram);
-      }
+      await sendMessage(null, config.telegram);
       return;
     }
 
@@ -41,7 +47,7 @@ const main = async () => {
 
     await saveSyncedBooks(syncedBooks);
   } catch (err: unknown) {
-    logger.error(toError(err));
+    await handleCriticalError(err, config.telegram);
   }
 };
 

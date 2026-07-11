@@ -8,6 +8,35 @@ import { formatFetchFailures } from "@services/helpers/formatFetchFailures";
 export const toError = (err: unknown) =>
   err instanceof Error ? err : new Error(String(err));
 
+interface CriticalErrorEffects {
+  logError: (error: Error) => void;
+  send: typeof sendMessage;
+}
+
+const defaultCriticalErrorEffects: CriticalErrorEffects = {
+  logError: (error) => logger.error(error),
+  send: sendMessage,
+};
+
+export const handleCriticalError = async (
+  err: unknown,
+  telegram: TelegramConfig,
+  effects: CriticalErrorEffects = defaultCriticalErrorEffects,
+): Promise<void> => {
+  effects.logError(toError(err));
+
+  try {
+    await effects.send(null, telegram);
+  } catch (notificationError: unknown) {
+    const error = toError(notificationError);
+    effects.logError(
+      new Error(
+        `Не удалось отправить сообщение об отсутствии новых книг: ${error.message}`,
+      ),
+    );
+  }
+};
+
 export const logFetchFailures = (failed: FailedUrl[]) => {
   if (failed.length === 0) {
     return false;
