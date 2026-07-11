@@ -14,4 +14,5 @@ model Books {
   title    String
 
   @@index([authorId])
+  @@unique([authorId, bookId])
 }

@@ -34,6 +34,7 @@ export const parseBooks = (html: string, url: string): ParseResult => {
     }
 
     const books: Book[] = [];
+    const seenBookIds = new Set<number>();
 
     form.find("a[href^='/b/']").each((_, elem) => {
       const href = $(elem).attr("href");
@@ -42,8 +43,12 @@ export const parseBooks = (html: string, url: string): ParseResult => {
       const match = href.match(/^\/b\/(\d+)\/?$/);
       if (!match) return;
 
+      const bookId = Number(match[1]);
+      if (seenBookIds.has(bookId)) return;
+
+      seenBookIds.add(bookId);
       books.push({
-        bookId: Number(match[1]),
+        bookId,
         title: $(elem).text().trim(),
       });
     });
