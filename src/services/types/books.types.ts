@@ -33,3 +33,9 @@ export type FetchBooksResult = {
   booksMap: BooksMap;
   failed: FailedUrl[];
 };
+
+export type SyncPlan = {
+  newBooks: BookWithAuthor[];
+  baselineBooks: BookWithAuthor[];
+  bookIdsToRemove: number[];
+};

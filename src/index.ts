@@ -30,8 +30,10 @@ const main = async () => {
     const fetchBooksResult = await fetchBooks(config.books);
     logFetchFailures(fetchBooksResult.failed);
 
-    const newBooks = await dataSync(fetchBooksResult.booksMap);
+    const syncPlan = await dataSync(fetchBooksResult.booksMap);
+    const { newBooks, baselineBooks, bookIdsToRemove } = syncPlan;
     if (!newBooks || newBooks.length === 0) {
+      await saveSyncedBooks(baselineBooks, bookIdsToRemove);
       await sendMessage(null, config.telegram);
       return;
     }
@@ -45,7 +47,10 @@ const main = async () => {
       }
     }
 
-    await saveSyncedBooks(syncedBooks);
+    await saveSyncedBooks(
+      [...baselineBooks, ...syncedBooks],
+      bookIdsToRemove,
+    );
   } catch (err: unknown) {
     await handleCriticalError(err, config.telegram);
   }

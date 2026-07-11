@@ -1,13 +1,56 @@
-import { BooksMap, BookWithAuthor } from "@services/types/books.types";
+import {
+  BooksMap,
+  BookWithAuthor,
+  SyncPlan,
+} from "@services/types/books.types";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "@services/logger.service";
-import { addAuthorId, mapBookData } from "@services/dataSync/bookMappers";
+import { addAuthorId } from "@services/dataSync/bookMappers";
+
+interface StoredBook {
+  id: number;
+  authorId: number;
+  bookId: number;
+  title: string;
+}
+
+interface DataSyncClient {
+  books: {
+    findMany(args: { where: { authorId: number } }): Promise<StoredBook[]>;
+  };
+  $disconnect(): Promise<void>;
+}
+
+interface SaveSyncClient {
+  $transaction<T>(operation: (tx: SaveSyncTransaction) => Promise<T>): Promise<T>;
+  $disconnect(): Promise<void>;
+}
+
+interface SaveSyncTransaction {
+  books: {
+    deleteMany(args: {
+      where: { id: { in: number[] } };
+    }): Promise<unknown>;
+    upsert(args: {
+      where: {
+        authorId_bookId: { authorId: number; bookId: number };
+      };
+      create: { authorId: number; bookId: number; title: string };
+      update: { title: string };
+    }): Promise<unknown>;
+  };
+}
 
 export const dataSync = async (
   books: BooksMap,
-): Promise<BookWithAuthor[] | null> => {
-  const prisma = new PrismaClient();
+  client?: DataSyncClient,
+): Promise<SyncPlan> => {
+  const prisma =
+    client ?? (new PrismaClient() as unknown as DataSyncClient);
+  const ownsClient = client === undefined;
   const newBooks: BookWithAuthor[] = [];
+  const baselineBooks: BookWithAuthor[] = [];
+  const bookIdsToRemove: number[] = [];
 
   try {
     for (const [authorId, parsedBooks] of books.entries()) {
@@ -23,9 +66,7 @@ export const dataSync = async (
       });
 
       if (dbBooks.length === 0) {
-        await prisma.books.createMany({
-          data: mapBookData(authorId, parsedBooks),
-        });
+        baselineBooks.push(...addAuthorId(authorId, parsedBooks));
       } else {
         const dbBookIds = new Set(dbBooks.map((book) => book.bookId));
         const parsedBookIds = new Set(parsedBooks.map((book) => book.bookId));
@@ -42,13 +83,7 @@ export const dataSync = async (
         }
 
         if (booksToRemove.length > 0) {
-          await Promise.all(
-            booksToRemove.map((book) =>
-              prisma.books.delete({
-                where: { id: book.id },
-              }),
-            ),
-          );
+          bookIdsToRemove.push(...booksToRemove.map((book) => book.id));
         }
       }
     }
@@ -56,33 +91,62 @@ export const dataSync = async (
     logger.error("Ошибка при синхронизации книг:", error);
     throw error;
   } finally {
-    await prisma.$disconnect();
+    if (ownsClient) {
+      await prisma.$disconnect();
+    }
   }
 
-  return newBooks.length > 0 ? newBooks : null;
+  return {
+    newBooks,
+    baselineBooks,
+    bookIdsToRemove,
+  };
 };
 
 export const saveSyncedBooks = async (
   books: BookWithAuthor[] | null,
+  bookIdsToRemove: number[] = [],
+  client?: SaveSyncClient,
 ): Promise<void> => {
-  if (!books || books.length === 0) {
+  if ((!books || books.length === 0) && bookIdsToRemove.length === 0) {
     return;
   }
 
-  const prisma = new PrismaClient();
+  const prisma =
+    client ?? (new PrismaClient() as unknown as SaveSyncClient);
+  const ownsClient = client === undefined;
 
   try {
-    await prisma.books.createMany({
-      data: books.map((book) => ({
-        authorId: book.authorId,
-        bookId: book.bookId,
-        title: book.title,
-      })),
+    await prisma.$transaction(async (transaction) => {
+      if (bookIdsToRemove.length > 0) {
+        await transaction.books.deleteMany({
+          where: { id: { in: bookIdsToRemove } },
+        });
+      }
+
+      for (const book of books ?? []) {
+        await transaction.books.upsert({
+          where: {
+            authorId_bookId: {
+              authorId: book.authorId,
+              bookId: book.bookId,
+            },
+          },
+          create: {
+            authorId: book.authorId,
+            bookId: book.bookId,
+            title: book.title,
+          },
+          update: { title: book.title },
+        });
+      }
     });
   } catch (error) {
     logger.error("Ошибка при сохранении отправленных книг:", error);
     throw error;
   } finally {
-    await prisma.$disconnect();
+    if (ownsClient) {
+      await prisma.$disconnect();
+    }
   }
 };
