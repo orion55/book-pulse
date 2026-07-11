@@ -1,4 +1,18 @@
 services:
+  migrate:
+    image: book-pulse-migrate:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: ["npx", "prisma", "migrate", "deploy"]
+    restart: "no"
+    user: node
+    environment:
+      DATABASE_URL: file:./dev.db
+    volumes:
+      - ./docker/dev.db:/app/dev.db
+
   app:
     image: book-pulse:latest
     build:
@@ -7,6 +21,9 @@ services:
       target: runner
     init: true
     restart: "no"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     environment:
       NODE_ENV: production
       DATABASE_URL: file:./dev.db
