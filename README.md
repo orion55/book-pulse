@@ -30,7 +30,7 @@ Book Pulse - Node.js/TypeScript-сервис для отслеживания н�
 
 ## Требования
 
-- Node.js `>=20.0.0`.
+- Node.js `>=22.23.4`.
 - npm.
 - Docker и Docker Compose, если нужен запуск в контейнере.
 - Telegram bot token и chat ID.
@@ -106,7 +106,7 @@ npm run docker
 
 ## Docker
 
-Приложение собирается из `node:20-bookworm`, затем запускается на `node:20-bookworm-slim` от пользователя `node`. Отдельный migrator использует компактный `node:20-alpine` и содержит только Prisma CLI, OpenSSL, `su-exec` и каталог `prisma/`. При старте migrator исправляет права bind-mounted базы и затем запускает Prisma от пользователя `node`.
+Приложение собирается из `node:22.23.4-bookworm`, затем запускается на `node:22.23.4-bookworm-slim` от пользователя `node`. Отдельный migrator использует компактный `node:22.23.4-alpine` и содержит только Prisma CLI, OpenSSL, `su-exec` и каталог `prisma/`. При старте migrator исправляет права bind-mounted базы и затем запускает Prisma от пользователя `node`.
 
 Во время сборки:
 

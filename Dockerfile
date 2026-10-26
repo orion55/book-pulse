@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20-bookworm AS builder
+FROM node:22.23.4-bookworm AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -18,7 +18,7 @@ RUN npx prisma generate \
  && npx cpy dist/client/libquery_engine-debian-openssl-3.0.x.so.node dist --flat \
  && npx rimraf dist/client
 
-FROM node:20-alpine AS migrator
+FROM node:22.23.4-alpine AS migrator
 
 ENV DATABASE_URL=file:/app/dev.db
 
@@ -33,7 +33,7 @@ COPY --chown=node:node prisma ./prisma
 
 CMD ["sh", "-c", "chown node:node /app/dev.db && chmod u+rw /app/dev.db && exec su-exec node prisma migrate deploy"]
 
-FROM node:20-bookworm-slim AS runner
+FROM node:22.23.4-bookworm-slim AS runner
 
 ENV NODE_ENV=production \
     DATABASE_URL=file:/app/dev.db \
